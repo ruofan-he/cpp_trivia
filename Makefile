@@ -5,9 +5,10 @@ SRCDIR := src
 LIBDIR := lib
 OUTDIR := build
 TARGET := $(OUTDIR)/$(PROGNAME)
-SRCS := $(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/$(LIBDIR)/*.cpp)
+SRCS := $(wildcard $(SRCDIR)/$(LIBDIR)/*.cpp)
 OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.cpp,%.o,$(SRCS)))
-$(warning $(OBJS))
+MAIN_SRCS := $(wildcard $(SRCDIR)/*.cpp)
+MAIN_OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.cpp,%.o,$(MAIN_SRCS)))
 
 CC = gcc
 # GCC compiling & linking flags
@@ -20,7 +21,12 @@ CFLAGS += -O2
 .PHONY: all clean
 all: $(TARGET)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(OUTDIR)/$(SRCDIR)/main.o
+	g++ $(CFLAGS) -o $@ $^
+
+
+namespace_lesson: $(OUTDIR)/namespace_lesson
+$(OUTDIR)/namespace_lesson: $(OBJS) $(OUTDIR)/$(SRCDIR)/namespace_lesson.o
 	g++ $(CFLAGS) -o $@ $^
 
 $(OUTDIR)/%.o:%.cpp
