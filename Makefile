@@ -4,40 +4,40 @@ INCDIR := include
 SRCDIR := src
 LIBDIR := lib
 OUTDIR := build
+OBJDIR := obj
 TARGET := $(OUTDIR)/$(PROGNAME)
 SRCS := $(wildcard $(SRCDIR)/$(LIBDIR)/*.cpp)
-OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.cpp,%.o,$(SRCS)))
+OBJS := $(addprefix $(OBJDIR)/,$(patsubst %.cpp,%.o,$(SRCS)))
 MAIN_SRCS := $(wildcard $(SRCDIR)/*.cpp)
-MAIN_OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.cpp,%.o,$(MAIN_SRCS)))
+MAIN_OBJS := $(addprefix $(OBJDIR)/,$(patsubst %.cpp,%.o,$(MAIN_SRCS)))
 
 CC = gcc
 # GCC compiling & linking flags
-CFLAGS  = -std=c++20 -Wall
+CFLAGS  = -std=c++20 #-Wall
 CFLAGS += -I$(INCDIR)
 #CFLAGS += -v # verbose g++ log
 CFLAGS += -lm # link math library
 CFLAGS += -O2
 
-.PHONY: all clean
-all: $(TARGET)
+.PRECIOUS : $(MAIN_OBJS)
 
-$(TARGET): $(OBJS) $(OUTDIR)/$(SRCDIR)/main.o
-	g++ $(CFLAGS) -o $@ $^
+.PHONY: all clean main namespace_lesson class_lesson
 
-
+all				: main
+main		    : $(OUTDIR)/main
 namespace_lesson: $(OUTDIR)/namespace_lesson
-$(OUTDIR)/namespace_lesson: $(OBJS) $(OUTDIR)/$(SRCDIR)/namespace_lesson.o
+class_lesson	: $(OUTDIR)/class_lesson
+string_lesson	: $(OUTDIR)/string_lesson
+
+$(OUTDIR)/%: $(OBJS) $(OBJDIR)/$(SRCDIR)/%.o
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
 	g++ $(CFLAGS) -o $@ $^
 
 
-class_lesson: $(OUTDIR)/class_lesson
-$(OUTDIR)/class_lesson: $(OBJS) $(OUTDIR)/$(SRCDIR)/class_lesson.o
-	g++ $(CFLAGS) -o $@ $^
-	
-
-$(OUTDIR)/%.o:%.cpp
+$(OBJDIR)/%.o:%.cpp
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
 	g++ $(CFLAGS) -o $@ -c $<
 
 clean:
+	rm -rf $(OBJDIR)
 	rm -rf $(OUTDIR)
