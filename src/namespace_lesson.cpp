@@ -16,10 +16,29 @@ namespace B
     }
 }
 
+namespace C{
+    void f();
+    void hoge();
+}
+
+void C::f(){
+    using namespace std;
+    cout << "C" << endl;
+}
+
+void C::hoge(){
+    using std::cout;
+    cout << "C hoge" << std::endl;
+}
+
+
+
 int main()
 {
     A::f(); // A
     B::f(); // B
     A::hoge(); // A
     B::hoge(); // A
+    C::f(); 
+    C::hoge();
 }

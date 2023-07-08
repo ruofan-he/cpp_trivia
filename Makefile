@@ -29,6 +29,12 @@ namespace_lesson: $(OUTDIR)/namespace_lesson
 $(OUTDIR)/namespace_lesson: $(OBJS) $(OUTDIR)/$(SRCDIR)/namespace_lesson.o
 	g++ $(CFLAGS) -o $@ $^
 
+
+class_lesson: $(OUTDIR)/class_lesson
+$(OUTDIR)/class_lesson: $(OBJS) $(OUTDIR)/$(SRCDIR)/class_lesson.o
+	g++ $(CFLAGS) -o $@ $^
+	
+
 $(OUTDIR)/%.o:%.cpp
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
 	g++ $(CFLAGS) -o $@ -c $<
