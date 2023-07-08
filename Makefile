@@ -1,28 +1,31 @@
-#目標
-#1. srcに複数のソースファイルを置く
-#2. includeにそれらのヘッダーファイルを置く
-#3. 分割コンパイルしつつも、それらがリンクされているようにする。
-#4. 出力先のフォルダを別に指定する。
-#ある関数がどのようにインクルードされているか確認する方法
 
-SRC_DIR = src
-OBJ_DIR = obj
-BIN_DIR = bin
-INC_DIR = include
+PROGNAME := main
+INCDIR := include
+SRCDIR := src
+LIBDIR := lib
+OUTDIR := build
+TARGET := $(OUTDIR)/$(PROGNAME)
+SRCS := $(wildcard $(SRCDIR)/*.cpp) $(wildcard $(SRCDIR)/$(LIBDIR)/*.cpp)
+OBJS := $(addprefix $(OUTDIR)/,$(patsubst %.cpp,%.o,$(SRCS)))
+$(warning $(OBJS))
 
+CC = gcc
 # GCC compiling & linking flags
 CFLAGS  = -std=c++20 -Wall
-CFLAGS += -I$(INC_DIR)
+CFLAGS += -I$(INCDIR)
 #CFLAGS += -v # verbose g++ log
 CFLAGS += -lm # link math library
+CFLAGS += -O2
 
-all: $(OBJ_DIR)/util1.o $(OBJ_DIR)/util2.o
-	g++ src/main.cpp $(OBJ_DIR)/util1.o $(OBJ_DIR)/util2.o $(CFLAGS)
+.PHONY: all clean
+all: $(TARGET)
 
-$(OBJ_DIR)/util1.o: $(SRC_DIR)/util1.cpp
-	mkdir -p $(OBJ_DIR)
-	g++ -c $^ -o $@ $(CFLAGS)
+$(TARGET): $(OBJS)
+	g++ $(CFLAGS) -o $@ $^
 
-$(OBJ_DIR)/util2.o: $(SRC_DIR)/util2.cpp
-	mkdir -p $(OBJ_DIR)
-	g++ -c $^ -o $@ $(CFLAGS)
+$(OUTDIR)/%.o:%.cpp
+	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
+	g++ $(CFLAGS) -o $@ -c $<
+
+clean:
+	rm -rf $(OUTDIR)
