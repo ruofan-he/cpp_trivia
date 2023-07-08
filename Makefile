@@ -4,7 +4,7 @@ INCDIR := include
 SRCDIR := src
 LIBDIR := lib
 OUTDIR := build
-OBJDIR := obj
+OBJDIR := build
 TARGET := $(OUTDIR)/$(PROGNAME)
 SRCS := $(wildcard $(SRCDIR)/$(LIBDIR)/*.cpp)
 OBJS := $(addprefix $(OBJDIR)/,$(patsubst %.cpp,%.o,$(SRCS)))
@@ -19,7 +19,7 @@ CFLAGS += -I$(INCDIR)
 CFLAGS += -lm # link math library
 CFLAGS += -O2
 
-.PRECIOUS : $(MAIN_OBJS)
+.PRECIOUS : $(MAIN_OBJS) $(OBJS)
 
 .PHONY: all clean main namespace_lesson class_lesson
 
