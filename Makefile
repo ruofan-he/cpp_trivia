@@ -30,6 +30,7 @@ class_lesson	: $(OUTDIR)/class_lesson
 string_lesson	: $(OUTDIR)/string_lesson
 operator_lesson	: $(OUTDIR)/operator_lesson
 vector_lesson	: $(OUTDIR)/vector_lesson
+reference_lesson: $(OUTDIR)/reference_lesson
 
 $(OUTDIR)/%: $(OBJS) $(OBJDIR)/$(SRCDIR)/%.o
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
