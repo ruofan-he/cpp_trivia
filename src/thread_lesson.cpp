@@ -13,7 +13,8 @@ using std::unique_ptr;
 using std::vector;
 
 int sharedValue=0;
-std::mutex mtx; 
+std::mutex mtx;
+std::shared_mutex smtx;
 
 void func1(int num)
 {
@@ -34,6 +35,19 @@ void func3()
     std::this_thread::sleep_for(std::chrono::milliseconds(200));
     sharedValue++;
     cout << "sharedValue : " << sharedValue << endl;
+}
+
+void func4()
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
+    {
+        std::lock_guard<std::shared_mutex> writeLock(smtx);
+        sharedValue++;
+    }
+    {
+        std::shared_lock<std::shared_mutex> readLock(smtx);
+        cout << "sharedValue : " << sharedValue << endl;
+    }
 }
 
 int main()
@@ -91,8 +105,20 @@ int main()
         pThread->join();
     }
 
+    cout << "##################" <<endl << endl;
 
+    cout << "execute shared_mutex locked access to shared value" << endl;
+    vector<unique_ptr<thread>> threadVecSharedValueSharedMutex;
+    for(int i=0;i<5;i++)
+    {
+        auto pThread = std::make_unique<thread>(thread(func4));
+        threadVecSharedValueSharedMutex.push_back(std::move(pThread));
+    }
 
-    
+    for(auto& pThread: threadVecSharedValueSharedMutex)
+    {
+        pThread->join();
+    }
+
     return 0;
 }
