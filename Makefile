@@ -17,7 +17,7 @@ CFLAGS  = -std=c++20 #-Wall
 CFLAGS += -I$(INCDIR)
 #CFLAGS += -v # verbose g++ log
 CFLAGS += -lm # link math library
-CFLAGS += -O2
+CFLAGS += -O2 -pthread
 
 .PRECIOUS : $(MAIN_OBJS) $(OBJS)
 
@@ -31,6 +31,7 @@ string_lesson	: $(OUTDIR)/string_lesson
 operator_lesson	: $(OUTDIR)/operator_lesson
 vector_lesson	: $(OUTDIR)/vector_lesson
 reference_lesson: $(OUTDIR)/reference_lesson
+thread_lesson   : $(OUTDIR)/thread_lesson
 
 $(OUTDIR)/%: $(OBJS) $(OBJDIR)/$(SRCDIR)/%.o
 	@if [ ! -e `dirname $@` ]; then mkdir -p `dirname $@`; fi
